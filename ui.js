@@ -1,4 +1,3 @@
-
 const criteriaC1 = [
   "Orientação técnica ambiental da Emater (placas, materiais, etc.)",
   "Práticas de conservação de solo e água (curvas de nível, terraceamento, barraginhas)",
@@ -450,110 +449,31 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  const form = document.getElementById("formInLoco");
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const obj = formToObject(form);
-    try {
-      await db_add(obj);
-      form.reset();
-      setStep(1);
-      await refreshTable();
-      await updateDashboard();
-      await switchView("view-table");
-      alert("Visita salva com sucesso!");
-    } catch (error) {
-      alert("Erro ao salvar visita. Verifique a conexão e tente novamente.");
-      console.error(error);
-    }
-  });
-
-  document.getElementById("btnLimpar").addEventListener("click", () => {
-    if (confirm("Deseja limpar todos os campos do formulário?")) {
-      document.getElementById("formInLoco").reset();
-      setStep(1);
-    }
-  });
-
-  document.getElementById("btnSalvarRascunho").addEventListener("click", async () => {
-    const obj = formToObject(form);
-    obj.id = "r_" + Date.now();
-    try {
-      await db_add(obj);
-      await refreshTable();
-      alert("Rascunho salvo na lista de entrevistas.");
-    } catch (error) {
-      alert("Erro ao salvar rascunho.");
-      console.error(error);
-    }
-  });
-
-  document.querySelectorAll(".nav-item").forEach(btn => {
-    btn.addEventListener("click", () => switchView(btn.dataset.view));
-  });
-
-  document.getElementById("tableEntrevistas").addEventListener("click", async (e) => {
-    // Abrir espelho
-    const btnEspelho = e.target.closest("[data-open-espelho]");
-    if (btnEspelho) {
-      const id = btnEspelho.getAttribute("data-open-espelho");
-      openEspelho(id);
-      return;
-    }
-    
-    // Duplicar visita
-    const btnDuplicate = e.target.closest("[data-duplicate]");
-    if (btnDuplicate) {
-      const id = btnDuplicate.getAttribute("data-duplicate");
-      await duplicateVisita(id);
-      return;
-    }
-    
-    // Deletar visita individual
-    const btnDelete = e.target.closest("[data-delete]");
-    if (btnDelete) {
-      const id = btnDelete.getAttribute("data-delete");
-      if (confirm("Tem certeza que deseja excluir esta visita?")) {
-        try {
-          await db_delete(id);
-          await refreshTable();
-          await updateDashboard();
-          alert("Visita excluída com sucesso!");
-        } catch (error) {
-          alert("Erro ao excluir visita.");
-          console.error(error);
-        }
-      }
-      return;
-    }
-  });
-
-  document.getElementById("btnCloseModal").addEventListener("click", closeEspelho);
-  document.getElementById("modalOverlay").addEventListener("click", (e) => {
-    if (e.target.id === "modalOverlay") closeEspelho();
-  });
-
-  // Inicializar filtros e exportação
-  initFiltersAndExports();
-  initVisitaExport();
-
-  document.getElementById("btnClearAll").addEventListener("click", async () => {
-    if (confirm("Tem certeza que deseja excluir todas as visitas registradas?")) {
-      try {
-        await db_clear();
-        await refreshTable();
-        await updateDashboard();
-        alert("Todas as visitas foram excluídas.");
-      } catch (error) {
-        alert("Erro ao excluir visitas.");
-        console.error(error);
+  // Mobile sidebar toggle
+  const sidebar = document.querySelector('.sidebar');
+  const btnSidebarToggle = document.getElementById('btnSidebarToggle');
+  if (btnSidebarToggle && sidebar) {
+    // Mostrar botão só em mobile
+    function updateSidebarToggleVisibility() {
+      if (window.innerWidth <= 880) {
+        btnSidebarToggle.style.display = 'flex';
+      } else {
+        btnSidebarToggle.style.display = 'none';
+        sidebar.classList.remove('open');
       }
     }
-  });
-
-  document.getElementById("btnExportJson").addEventListener("click", exportAllJSON);
-  document.getElementById("btnExportCsv").addEventListener("click", exportAllCSV);
-
-  refreshTable();
-  updateDashboard().catch(err => console.error('Erro ao atualizar dashboard:', err));
+    updateSidebarToggleVisibility();
+    window.addEventListener('resize', updateSidebarToggleVisibility);
+    btnSidebarToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+    });
+    // Fechar sidebar ao clicar fora
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth > 880) return;
+      if (!sidebar.classList.contains('open')) return;
+      if (!sidebar.contains(e.target) && e.target !== btnSidebarToggle) {
+        sidebar.classList.remove('open');
+      }
+    });
+  }
 });
