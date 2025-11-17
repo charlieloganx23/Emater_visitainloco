@@ -36,9 +36,20 @@ async function initializeDatabase() {
     if (tables.length === 0) {
       console.log('📥 Criando estrutura do banco de dados...');
       
-      // Ler e executar schema.sql
-      const schema = fs.readFileSync('schema.sql', 'utf8');
-      await connection.query(schema);
+      // Ler e executar schema-clean.sql (sem CREATE DATABASE e USE)
+      const schema = fs.readFileSync('schema-clean.sql', 'utf8');
+      
+      // Dividir o SQL em comandos individuais e executar um por um
+      const statements = schema
+        .split(';')
+        .map(s => s.trim())
+        .filter(s => s.length > 0 && !s.startsWith('--'));
+      
+      for (const statement of statements) {
+        if (statement.trim()) {
+          await connection.query(statement);
+        }
+      }
       
       console.log('✅ Banco de dados inicializado com sucesso');
     } else {
