@@ -50,6 +50,7 @@ function renderCriteria(containerId, basePrefix, items) {
         <button type="button" class="chip" data-target="${idBase}" data-value="sim">Sim</button>
         <button type="button" class="chip" data-target="${idBase}" data-value="nao">Não</button>
         <button type="button" class="chip" data-target="${idBase}" data-value="parcial">Parcial</button>
+        <button type="button" class="chip" data-target="${idBase}" data-value="n/a">N/A</button>
       </div>
       <textarea name="${idBase}_obs" placeholder="Observações (opcional)"></textarea>
       <input type="hidden" name="${idBase}_status" id="${idBase}_status">
@@ -70,11 +71,12 @@ function initChips() {
 
       const parent = btn.parentElement;
       parent.querySelectorAll(".chip").forEach(c => {
-        c.classList.remove("active-sim", "active-nao", "active-parcial");
+        c.classList.remove("active-sim", "active-nao", "active-parcial", "active-na");
       });
       if (value === "sim") btn.classList.add("active-sim");
       if (value === "nao") btn.classList.add("active-nao");
       if (value === "parcial") btn.classList.add("active-parcial");
+      if (value === "n/a") btn.classList.add("active-na");
     });
   });
 }
@@ -212,8 +214,9 @@ function computeSustainabilityIndex(record) {
     // Fallback para formato antigo
     Object.entries(record).forEach(([k, v]) => {
       if (k.startsWith("c1_") && k.endsWith("_status")) {
-        if (v === "sim" || v === "nao" || v === "parcial") {
-          total++;
+        if (v === "sim" || v === "nao" || v === "parcial" || v === "n/a") {
+          // N/A não conta para o total (não aplicável)
+          if (v !== "n/a") total++;
           if (v === "sim") sim++;
         }
       }

@@ -78,6 +78,10 @@
   background: #facc15;
 }
 
+.chart-row-bar-fill.na {
+  background: #9ca3af;
+}
+
 .chart-row-bar-fill {
   height: 100%;
   width: 0;

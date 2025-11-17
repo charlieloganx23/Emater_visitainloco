@@ -170,7 +170,7 @@ async function updateDashboardMetrics() {
   const list = filteredVisitas;
   const totalVisitas = list.length;
 
-  let totalSim = 0, totalNao = 0, totalParcial = 0;
+  let totalSim = 0, totalNao = 0, totalParcial = 0, totalNA = 0;
   let c1Sim = 0, c1Total = 0;
   let propsComMercado = 0;
 
@@ -180,13 +180,14 @@ async function updateDashboardMetrics() {
       if (Array.isArray(visita[criterio])) {
         visita[criterio].forEach(item => {
           Object.entries(item).forEach(([key, value]) => {
-            if (value === "sim" || value === "nao" || value === "parcial") {
+            if (value === "sim" || value === "nao" || value === "parcial" || value === "n/a") {
               if (value === "sim") totalSim++;
               if (value === "nao") totalNao++;
               if (value === "parcial") totalParcial++;
+              if (value === "n/a") totalNA++;
 
               if (criterio === "c1") {
-                c1Total++;
+                if (value !== "n/a") c1Total++;
                 if (value === "sim") c1Sim++;
               }
             }
@@ -197,14 +198,15 @@ async function updateDashboardMetrics() {
 
     // Também processar campos flat (c1_01, c2_01, etc.) para compatibilidade
     Object.entries(visita).forEach(([key, value]) => {
-      if (value === "sim" || value === "nao" || value === "parcial") {
+      if (value === "sim" || value === "nao" || value === "parcial" || value === "n/a") {
         if (!key.includes('id') && !key.includes('visita')) {
           if (value === "sim") totalSim++;
           if (value === "nao") totalNao++;
           if (value === "parcial") totalParcial++;
+          if (value === "n/a") totalNA++;
 
           if (key.startsWith("c1_")) {
-            c1Total++;
+            if (value !== "n/a") c1Total++;
             if (value === "sim") c1Sim++;
           }
         }
@@ -219,7 +221,7 @@ async function updateDashboardMetrics() {
     if (hasMercado) propsComMercado++;
   });
 
-  const totalResps = totalSim + totalNao + totalParcial;
+  const totalResps = totalSim + totalNao + totalParcial; // N/A não conta no total
   const pctSim = totalResps ? (totalSim / totalResps) * 100 : 0;
   const c1Index = c1Total ? (c1Sim / c1Total) * 100 : 0;
   const pctMercados = totalVisitas ? (propsComMercado / totalVisitas) * 100 : 0;
@@ -230,10 +232,10 @@ async function updateDashboardMetrics() {
   document.getElementById("kpiMercados").textContent = pctMercados.toFixed(0) + "%";
 
   // Atualizar gráfico de barras simples (já existente)
-  updateSimpleBarChart(totalSim, totalNao, totalParcial);
+  updateSimpleBarChart(totalSim, totalNao, totalParcial, totalNA);
 }
 
-function updateSimpleBarChart(totalSim, totalNao, totalParcial) {
+function updateSimpleBarChart(totalSim, totalNao, totalParcial, totalNA) {
   const bar = document.getElementById("chartSimNaoParcial");
   if (!bar) return;
   
@@ -241,9 +243,10 @@ function updateSimpleBarChart(totalSim, totalNao, totalParcial) {
   const rows = [
     ["Sim", totalSim, "sim"],
     ["Não", totalNao, "nao"],
-    ["Parcial", totalParcial, "parcial"]
+    ["Parcial", totalParcial, "parcial"],
+    ["N/A", totalNA, "na"]
   ];
-  const maxVal = Math.max(1, totalSim, totalNao, totalParcial);
+  const maxVal = Math.max(1, totalSim, totalNao, totalParcial, totalNA);
   
   rows.forEach(([label, value, key]) => {
     const row = document.createElement("div");
@@ -264,7 +267,7 @@ function updatePieChart() {
   if (!canvas || typeof Chart === 'undefined') return;
 
   const list = filteredVisitas;
-  let totalSim = 0, totalNao = 0, totalParcial = 0;
+  let totalSim = 0, totalNao = 0, totalParcial = 0, totalNA = 0;
 
   list.forEach(visita => {
     // Processar critérios que vêm como arrays
@@ -275,6 +278,7 @@ function updatePieChart() {
             if (value === "sim") totalSim++;
             if (value === "nao") totalNao++;
             if (value === "parcial") totalParcial++;
+            if (value === "n/a") totalNA++;
           });
         });
       }
@@ -282,11 +286,12 @@ function updatePieChart() {
 
     // Também processar campos flat para compatibilidade
     Object.entries(visita).forEach(([key, value]) => {
-      if (value === "sim" || value === "nao" || value === "parcial") {
+      if (value === "sim" || value === "nao" || value === "parcial" || value === "n/a") {
         if (!key.includes('id') && !key.includes('visita')) {
           if (value === "sim") totalSim++;
           if (value === "nao") totalNao++;
           if (value === "parcial") totalParcial++;
+          if (value === "n/a") totalNA++;
         }
       }
     });
@@ -301,10 +306,10 @@ function updatePieChart() {
   chartInstances.pie = new Chart(ctx, {
     type: 'doughnut',
     data: {
-      labels: ['Sim', 'Não', 'Parcial'],
+      labels: ['Sim', 'Não', 'Parcial', 'N/A'],
       datasets: [{
-        data: [totalSim, totalNao, totalParcial],
-        backgroundColor: ['#22c55e', '#ef4444', '#facc15'],
+        data: [totalSim, totalNao, totalParcial, totalNA],
+        backgroundColor: ['#22c55e', '#ef4444', '#facc15', '#9ca3af'],
         borderWidth: 2,
         borderColor: '#fff'
       }]
@@ -421,7 +426,7 @@ function updateComparativoRegional() {
       if (Array.isArray(v[criterio])) {
         v[criterio].forEach(item => {
           Object.values(item).forEach(value => {
-            if (value === "sim" || value === "nao" || value === "parcial") {
+            if (value === "sim" || value === "nao" || value === "parcial") { // N/A não entra no cálculo
               municipioStats[v.municipio][criterio].total++;
               if (value === "sim") municipioStats[v.municipio][criterio].sim++;
             }
@@ -432,7 +437,7 @@ function updateComparativoRegional() {
 
     // Processar campos flat para compatibilidade
     Object.entries(v).forEach(([key, value]) => {
-      if (value === "sim" || value === "nao" || value === "parcial") {
+      if (value === "sim" || value === "nao" || value === "parcial") { // N/A não entra no cálculo
         const prefix = key.split("_")[0];
         if (municipioStats[v.municipio][prefix] && !key.includes('id')) {
           municipioStats[v.municipio][prefix].total++;
@@ -508,7 +513,7 @@ function updateTrendLineChart() {
       if (Array.isArray(v[criterio])) {
         v[criterio].forEach(item => {
           Object.values(item).forEach(value => {
-            if (value === "sim" || value === "nao" || value === "parcial") {
+            if (value === "sim" || value === "nao" || value === "parcial") { // N/A não entra no cálculo
               total++;
               if (value === "sim") sim++;
             }
@@ -519,7 +524,7 @@ function updateTrendLineChart() {
 
     // Processar campos flat para compatibilidade
     Object.entries(v).forEach(([key, value]) => {
-      if (value === "sim" || value === "nao" || value === "parcial") {
+      if (value === "sim" || value === "nao" || value === "parcial") { // N/A não entra no cálculo
         if (!key.includes('id') && !key.includes('visita')) {
           total++;
           if (value === "sim") sim++;

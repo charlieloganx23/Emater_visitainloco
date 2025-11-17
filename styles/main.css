@@ -328,6 +328,11 @@ body {
   color: #b91c1c;
 }
 
+.badge.na {
+  background: #e5e7eb;
+  color: #374151;
+}
+
 .badge.neutro {
   background: #e5e7eb;
   color: #374151;

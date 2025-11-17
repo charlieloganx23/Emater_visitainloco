@@ -178,10 +178,18 @@ textarea:focus {
 }
 
 .chip.active-parcial {
-  background: #fef9c3;
-  border-color: #facc15;
-  color: #92400e;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #78350f;
+  font-weight: 600;
 }
+
+.chip.active-na {
+  background: linear-gradient(135deg, #9ca3af, #6b7280);
+  color: white;
+  font-weight: 600;
+}
+
+.obs-group {
 
 .criteria-card textarea {
   font-size: 0.8rem;

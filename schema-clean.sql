@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS criterio_c1 (
     visita_id VARCHAR(50) NOT NULL,
     item_index INT NOT NULL,
     item_label VARCHAR(500),
-    status ENUM('sim', 'nao', 'parcial') DEFAULT NULL,
+    status ENUM('sim', 'nao', 'parcial', 'n/a') DEFAULT NULL,
     observacao TEXT,
     FOREIGN KEY (visita_id) REFERENCES visitas(id) ON DELETE CASCADE,
     INDEX idx_visita (visita_id)
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS criterio_c2 (
     visita_id VARCHAR(50) NOT NULL,
     item_index INT NOT NULL,
     item_label VARCHAR(500),
-    status ENUM('sim', 'nao', 'parcial') DEFAULT NULL,
+    status ENUM('sim', 'nao', 'parcial', 'n/a') DEFAULT NULL,
     observacao TEXT,
     FOREIGN KEY (visita_id) REFERENCES visitas(id) ON DELETE CASCADE,
     INDEX idx_visita (visita_id)
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS criterio_c3 (
     visita_id VARCHAR(50) NOT NULL,
     item_index INT NOT NULL,
     item_label VARCHAR(500),
-    status ENUM('sim', 'nao', 'parcial') DEFAULT NULL,
+    status ENUM('sim', 'nao', 'parcial', 'n/a') DEFAULT NULL,
     observacao TEXT,
     FOREIGN KEY (visita_id) REFERENCES visitas(id) ON DELETE CASCADE,
     INDEX idx_visita (visita_id)
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS criterio_c4 (
     visita_id VARCHAR(50) NOT NULL,
     item_index INT NOT NULL,
     item_label VARCHAR(500),
-    status ENUM('sim', 'nao', 'parcial') DEFAULT NULL,
+    status ENUM('sim', 'nao', 'parcial', 'n/a') DEFAULT NULL,
     observacao TEXT,
     descricao_comercializacao TEXT,
     FOREIGN KEY (visita_id) REFERENCES visitas(id) ON DELETE CASCADE,

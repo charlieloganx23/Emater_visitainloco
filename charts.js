@@ -19,20 +19,21 @@ async function computeMetrics() {
   
   const totalVisitas = list.length;
 
-  let totalSim = 0, totalNao = 0, totalParcial = 0;
+  let totalSim = 0, totalNao = 0, totalParcial = 0, totalNA = 0;
   let c1Sim = 0, c1Total = 0;
   let propsComMercado = 0;
   const timelineMap = {};
 
   list.forEach(r => {
     Object.entries(r).forEach(([key, value]) => {
-      if (value === "sim" || value === "nao" || value === "parcial") {
+      if (value === "sim" || value === "nao" || value === "parcial" || value === "n/a") {
         if (value === "sim") totalSim++;
         if (value === "nao") totalNao++;
         if (value === "parcial") totalParcial++;
+        if (value === "n/a") totalNA++;
 
         if (key.startsWith("c1_")) {
-          c1Total++;
+          if (value !== "n/a") c1Total++;
           if (value === "sim") c1Sim++;
         }
       }
@@ -59,6 +60,7 @@ async function computeMetrics() {
     totalSim,
     totalNao,
     totalParcial,
+    totalNA,
     pctSim,
     c1Index,
     pctMercados,
@@ -87,9 +89,10 @@ async function updateDashboard() {
   const rows = [
     ["Sim", m.totalSim, "sim"],
     ["Não", m.totalNao, "nao"],
-    ["Parcial", m.totalParcial, "parcial"]
+    ["Parcial", m.totalParcial, "parcial"],
+    ["N/A", m.totalNA, "na"]
   ];
-  const maxVal = Math.max(1, m.totalSim, m.totalNao, m.totalParcial);
+  const maxVal = Math.max(1, m.totalSim, m.totalNao, m.totalParcial, m.totalNA);
   rows.forEach(([label, value, key]) => {
     const row = document.createElement("div");
     row.className = "chart-row";
@@ -117,7 +120,7 @@ async function updateDashboard() {
 
   list.forEach(r => {
     Object.entries(r).forEach(([k, v]) => {
-      if (v === "sim" || v === "nao" || v === "parcial") {
+      if (v === "sim" || v === "nao" || v === "parcial") { // N/A não entra no cálculo
         const prefix = k.split("_")[0];
         if (critStats[prefix]) {
           critStats[prefix].total++;
