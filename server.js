@@ -34,6 +34,7 @@ async function initializeDatabase() {
     
     // Ler e executar schema-clean.sql (usa CREATE TABLE IF NOT EXISTS)
     const schema = fs.readFileSync('schema-clean.sql', 'utf8');
+    console.log(`📄 Schema lido: ${schema.length} caracteres`);
     
     // Dividir o SQL em comandos individuais e executar um por um
     const statements = schema
@@ -41,16 +42,23 @@ async function initializeDatabase() {
       .map(s => s.trim())
       .filter(s => s.length > 0 && !s.startsWith('--'));
     
+    console.log(`📝 ${statements.length} statements encontrados`);
+    
+    let executedCount = 0;
     for (const statement of statements) {
       if (statement.trim()) {
         try {
           await connection.query(statement);
+          executedCount++;
         } catch (err) {
           console.error('⚠️  Erro ao executar statement:', err.message);
+          console.error('Statement:', statement.substring(0, 100) + '...');
           // Continuar mesmo com erro (tabela pode já existir)
         }
       }
     }
+    
+    console.log(`✅ ${executedCount} statements executados com sucesso`);
     
     // Verificar se as tabelas foram criadas
     const [tables] = await connection.query("SHOW TABLES");
