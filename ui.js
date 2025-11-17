@@ -502,5 +502,5 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnExportCsv").addEventListener("click", exportAllCSV);
 
   refreshTable();
-  updateDashboard();
+  updateDashboard().catch(err => console.error('Erro ao atualizar dashboard:', err));
 });

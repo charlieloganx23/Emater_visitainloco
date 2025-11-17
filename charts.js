@@ -1,6 +1,22 @@
 
-function computeMetrics() {
-  const list = db_list();
+async function computeMetrics() {
+  const list = await db_list();
+  
+  // Garantir que list é um array
+  if (!Array.isArray(list)) {
+    console.error('db_list não retornou um array:', list);
+    return {
+      totalVisitas: 0,
+      totalSim: 0,
+      totalNao: 0,
+      totalParcial: 0,
+      c1Sim: 0,
+      c1Total: 0,
+      propsComMercado: 0,
+      timeline: []
+    };
+  }
+  
   const totalVisitas = list.length;
 
   let totalSim = 0, totalNao = 0, totalParcial = 0;
@@ -50,8 +66,8 @@ function computeMetrics() {
   };
 }
 
-function updateDashboard() {
-  const m = computeMetrics();
+async function updateDashboard() {
+  const m = await computeMetrics();
   const elTotal = document.getElementById("kpiTotalVisitas");
   if (!elTotal) return; // dashboard ainda não montado
 

@@ -65,13 +65,7 @@ async function initializeDatabase() {
   }
 }
 
-// Inicializar banco e depois continuar
-initializeDatabase().catch(err => {
-  console.error('❌ Falha crítica ao inicializar:', err);
-  process.exit(1);
-});
-
-// Rotas de API
+// Rotas de API (serão executadas após inicialização do banco)
 
 // GET todas as visitas
 app.get("/api/visitas", async (req, res) => {
@@ -248,6 +242,18 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-app.listen(PORT, () => {
-  console.log("🚀 Servidor observacao-in-loco ouvindo na porta", PORT);
-});
+// Inicializar banco de dados e depois iniciar o servidor
+async function startServer() {
+  try {
+    await initializeDatabase();
+    
+    app.listen(PORT, () => {
+      console.log("🚀 Servidor observacao-in-loco ouvindo na porta", PORT);
+    });
+  } catch (err) {
+    console.error('❌ Falha crítica ao inicializar:', err);
+    process.exit(1);
+  }
+}
+
+startServer();
