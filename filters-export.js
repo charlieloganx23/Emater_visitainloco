@@ -229,3 +229,245 @@ function initFiltersAndExports() {
     btnPDF.addEventListener('click', exportToPDF);
   }
 }
+
+// === EXPORTAÇÃO INDIVIDUAL DE VISITA ===
+
+let currentVisitaForExport = null; // Armazena a visita atual do modal
+
+// Exportar visita individual para Excel
+function exportVisitaToExcel() {
+  if (!currentVisitaForExport) {
+    alert('Nenhuma visita selecionada!');
+    return;
+  }
+  
+  const v = currentVisitaForExport;
+  const wb = XLSX.utils.book_new();
+  
+  // Aba 1: Identificação
+  const identData = [
+    ['Campo', 'Valor'],
+    ['Agricultor', v.agricultor || ''],
+    ['Município', v.municipio || ''],
+    ['Propriedade', v.propriedade || ''],
+    ['Data da Visita', v.data_visita || v.dataVisita || ''],
+    ['Auditor', v.auditor || ''],
+    ['Técnico', v.tecnico || '']
+  ];
+  const wsIdent = XLSX.utils.aoa_to_sheet(identData);
+  wsIdent['!cols'] = [{ wch: 20 }, { wch: 40 }];
+  XLSX.utils.book_append_sheet(wb, wsIdent, 'Identificação');
+  
+  // Função auxiliar para criar aba de critério
+  function addCriterioSheet(criterios, sheetName) {
+    if (!Array.isArray(criterios) || criterios.length === 0) return;
+    
+    const data = [['Item', 'Descrição', 'Status', 'Observação']];
+    criterios.forEach(c => {
+      data.push([
+        c.item_index || '',
+        c.item_label || '',
+        c.status || '',
+        c.observacao || ''
+      ]);
+    });
+    
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    ws['!cols'] = [{ wch: 8 }, { wch: 50 }, { wch: 12 }, { wch: 40 }];
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+  }
+  
+  // Adicionar abas de critérios
+  addCriterioSheet(v.c1, 'C1 - Sustentabilidade');
+  addCriterioSheet(v.c2, 'C2 - Resultados');
+  addCriterioSheet(v.c3, 'C3 - Agregação');
+  addCriterioSheet(v.c4, 'C4 - Mercados');
+  
+  // Aba: Barreiras
+  if (v.barreiras) {
+    const b = v.barreiras;
+    const barreirasData = [
+      ['Campo', 'Descrição'],
+      ['Impedimentos práticas sustentáveis', b.impedimentos_praticas_sustentaveis || ''],
+      ['Gargalos comercialização', b.gargalos_comercializacao || ''],
+      ['Infraestrutura beneficiamento', b.infraestrutura_beneficiamento || ''],
+      ['Adequação assistência técnica', b.adequacao_assistencia_tecnica || '']
+    ];
+    const wsBarreiras = XLSX.utils.aoa_to_sheet(barreirasData);
+    wsBarreiras['!cols'] = [{ wch: 35 }, { wch: 60 }];
+    XLSX.utils.book_append_sheet(wb, wsBarreiras, 'Barreiras');
+  }
+  
+  // Aba: Síntese
+  if (v.sintese && v.sintese.texto_sintese) {
+    const sinteseData = [
+      ['Síntese do Auditor'],
+      [v.sintese.texto_sintese]
+    ];
+    const wsSintese = XLSX.utils.aoa_to_sheet(sinteseData);
+    wsSintese['!cols'] = [{ wch: 100 }];
+    XLSX.utils.book_append_sheet(wb, wsSintese, 'Síntese');
+  }
+  
+  // Download
+  const filename = `visita-${v.agricultor || 'sem-nome'}-${v.data_visita || 'sem-data'}.xlsx`
+    .replace(/[^a-z0-9-_.]/gi, '-')
+    .toLowerCase();
+  XLSX.writeFile(wb, filename);
+}
+
+// Exportar visita individual para PDF
+function exportVisitaToPDF() {
+  if (!currentVisitaForExport) {
+    alert('Nenhuma visita selecionada!');
+    return;
+  }
+  
+  const v = currentVisitaForExport;
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p', 'mm', 'a4');
+  
+  let yPos = 15;
+  
+  // Título
+  doc.setFontSize(18);
+  doc.setFont(undefined, 'bold');
+  doc.text('Espelho da Visita - Emater-RO', 14, yPos);
+  yPos += 10;
+  
+  // Identificação
+  doc.setFontSize(12);
+  doc.text('Identificação', 14, yPos);
+  yPos += 7;
+  
+  doc.setFontSize(10);
+  doc.setFont(undefined, 'normal');
+  const identInfo = [
+    `Agricultor: ${v.agricultor || '-'}`,
+    `Município: ${v.municipio || '-'}`,
+    `Propriedade: ${v.propriedade || '-'}`,
+    `Data: ${v.data_visita || v.dataVisita || '-'}`,
+    `Auditor: ${v.auditor || '-'}`,
+    `Técnico: ${v.tecnico || '-'}`
+  ];
+  
+  identInfo.forEach(line => {
+    doc.text(line, 14, yPos);
+    yPos += 5;
+  });
+  
+  // Função auxiliar para adicionar critério
+  function addCriterioSection(criterios, titulo) {
+    if (!Array.isArray(criterios) || criterios.length === 0) return;
+    
+    // Nova página se necessário
+    if (yPos > 250) {
+      doc.addPage();
+      yPos = 15;
+    }
+    
+    yPos += 5;
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'bold');
+    doc.text(titulo, 14, yPos);
+    yPos += 7;
+    
+    const tableData = criterios.map(c => [
+      c.item_label || '',
+      c.status || '-',
+      c.observacao || ''
+    ]);
+    
+    doc.autoTable({
+      startY: yPos,
+      head: [['Item', 'Status', 'Observação']],
+      body: tableData,
+      theme: 'grid',
+      styles: { fontSize: 8, cellPadding: 2 },
+      headStyles: { fillColor: [41, 128, 185], fontStyle: 'bold' },
+      columnStyles: {
+        0: { cellWidth: 90 },
+        1: { cellWidth: 25, halign: 'center' },
+        2: { cellWidth: 65 }
+      },
+      margin: { left: 14, right: 14 }
+    });
+    
+    yPos = doc.lastAutoTable.finalY + 5;
+  }
+  
+  // Adicionar seções de critérios
+  addCriterioSection(v.c1, 'C1 - Práticas Produtivas Sustentáveis');
+  addCriterioSection(v.c2, 'C2 - Resultados Percebidos');
+  addCriterioSection(v.c3, 'C3 - Estrutura para Agregação de Valor');
+  addCriterioSection(v.c4, 'C4 - Inserção em Mercados');
+  
+  // Barreiras
+  if (v.barreiras) {
+    if (yPos > 220) {
+      doc.addPage();
+      yPos = 15;
+    }
+    
+    yPos += 5;
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'bold');
+    doc.text('Barreiras e Limitações', 14, yPos);
+    yPos += 7;
+    
+    doc.setFontSize(9);
+    doc.setFont(undefined, 'normal');
+    const b = v.barreiras;
+    const barreirasText = [
+      `Impedimentos: ${b.impedimentos_praticas_sustentaveis || '-'}`,
+      `Gargalos: ${b.gargalos_comercializacao || '-'}`,
+      `Infraestrutura: ${b.infraestrutura_beneficiamento || '-'}`,
+      `Assistência Técnica: ${b.adequacao_assistencia_tecnica || '-'}`
+    ];
+    
+    barreirasText.forEach(line => {
+      const splitText = doc.splitTextToSize(line, 180);
+      doc.text(splitText, 14, yPos);
+      yPos += splitText.length * 5;
+    });
+  }
+  
+  // Síntese
+  if (v.sintese && v.sintese.texto_sintese) {
+    if (yPos > 220) {
+      doc.addPage();
+      yPos = 15;
+    }
+    
+    yPos += 5;
+    doc.setFontSize(12);
+    doc.setFont(undefined, 'bold');
+    doc.text('Síntese do Auditor', 14, yPos);
+    yPos += 7;
+    
+    doc.setFontSize(9);
+    doc.setFont(undefined, 'normal');
+    const splitSintese = doc.splitTextToSize(v.sintese.texto_sintese, 180);
+    doc.text(splitSintese, 14, yPos);
+  }
+  
+  // Download
+  const filename = `visita-${v.agricultor || 'sem-nome'}-${v.data_visita || 'sem-data'}.pdf`
+    .replace(/[^a-z0-9-_.]/gi, '-')
+    .toLowerCase();
+  doc.save(filename);
+}
+
+// Inicializar eventos de exportação individual
+function initVisitaExport() {
+  const btnExcel = document.getElementById('btnExportVisitaExcel');
+  const btnPDF = document.getElementById('btnExportVisitaPDF');
+  
+  if (btnExcel) {
+    btnExcel.addEventListener('click', exportVisitaToExcel);
+  }
+  
+  if (btnPDF) {
+    btnPDF.addEventListener('click', exportVisitaToPDF);
+  }
+}

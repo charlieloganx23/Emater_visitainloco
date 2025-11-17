@@ -278,6 +278,10 @@ async function refreshTable() {
 async function openEspelho(id) {
   const r = await db_get(id);
   if (!r) return;
+  
+  // Armazenar visita para exportação
+  currentVisitaForExport = r;
+  
   const overlay = document.getElementById("modalOverlay");
   const body = document.getElementById("modalBody");
   const sub = document.getElementById("modalSub");
@@ -521,6 +525,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Inicializar filtros e exportação
   initFiltersAndExports();
+  initVisitaExport();
 
   document.getElementById("btnClearAll").addEventListener("click", async () => {
     if (confirm("Tem certeza que deseja excluir todas as visitas registradas?")) {
