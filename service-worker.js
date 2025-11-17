@@ -1,6 +1,6 @@
 // service-worker.js - Service Worker para cache e funcionamento offline
 
-const CACHE_NAME = 'emater-v1.4.0';
+const CACHE_NAME = 'emater-v1.4.1'; // Incrementar a cada deploy importante
 const CACHE_URLS = [
   '/',
   '/index.html',
@@ -20,7 +20,10 @@ const CACHE_URLS = [
 
 // Instalação do Service Worker
 self.addEventListener('install', (event) => {
-  console.log('📦 Service Worker: Instalando...');
+  console.log('📦 Service Worker: Instalando versão', CACHE_NAME);
+  
+  // skipWaiting força a ativação imediata da nova versão
+  self.skipWaiting();
   
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -30,7 +33,6 @@ self.addEventListener('install', (event) => {
       })
       .then(() => {
         console.log('✅ Service Worker: Todos os arquivos em cache');
-        return self.skipWaiting(); // Ativa imediatamente
       })
       .catch(err => {
         console.error('❌ Service Worker: Erro ao cachear:', err);
@@ -40,7 +42,7 @@ self.addEventListener('install', (event) => {
 
 // Ativação do Service Worker
 self.addEventListener('activate', (event) => {
-  console.log('🔄 Service Worker: Ativando...');
+  console.log('🔄 Service Worker: Ativando versão', CACHE_NAME);
   
   event.waitUntil(
     caches.keys()
@@ -56,8 +58,21 @@ self.addEventListener('activate', (event) => {
         );
       })
       .then(() => {
-        console.log('✅ Service Worker: Ativado');
-        return self.clients.claim(); // Toma controle de todas as páginas
+        console.log('✅ Service Worker: Ativado e caches limpos');
+        // Toma controle de todas as páginas imediatamente
+        return self.clients.claim();
+      })
+      .then(() => {
+        // Notificar todos os clientes sobre a nova versão
+        return self.clients.matchAll();
+      })
+      .then(clients => {
+        clients.forEach(client => {
+          client.postMessage({
+            type: 'SW_UPDATED',
+            version: CACHE_NAME
+          });
+        });
       })
   );
 });
