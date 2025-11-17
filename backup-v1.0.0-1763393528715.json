@@ -1,0 +1,486 @@
+{
+  "timestamp": "2025-11-17T15:32:06.486Z",
+  "version": "v1.0.0",
+  "tables": {
+    "visitas": [
+      {
+        "id": "v_1763391636568",
+        "agricultor": "jose",
+        "municipio": "nova mamore",
+        "propriedade": "alter",
+        "data_visita": "2025-11-18T04:00:00.000Z",
+        "auditor": "robs",
+        "tecnico": "cx",
+        "criado_em": "2025-11-17T19:00:38.000Z",
+        "atualizado_em": "2025-11-17T19:00:38.000Z"
+      },
+      {
+        "id": "v_1763393466229",
+        "agricultor": "joão",
+        "municipio": "cacoal",
+        "propriedade": "rocinha",
+        "data_visita": "2025-11-18T04:00:00.000Z",
+        "auditor": "cx",
+        "tecnico": "cx23",
+        "criado_em": "2025-11-17T19:31:08.000Z",
+        "atualizado_em": "2025-11-17T19:31:08.000Z"
+      }
+    ],
+    "criterio_c1": [
+      {
+        "id": 1,
+        "visita_id": "v_1763391636568",
+        "item_index": 0,
+        "item_label": "Orientação técnica ambiental da Emater (placas, materiais, etc.)",
+        "status": "sim",
+        "observacao": ""
+      },
+      {
+        "id": 2,
+        "visita_id": "v_1763391636568",
+        "item_index": 1,
+        "item_label": "Práticas de conservação de solo e água (curvas de nível, terraceamento, barraginhas)",
+        "status": "sim",
+        "observacao": ""
+      },
+      {
+        "id": 3,
+        "visita_id": "v_1763391636568",
+        "item_index": 2,
+        "item_label": "Uso de compostagem ou adubação orgânica",
+        "status": "sim",
+        "observacao": ""
+      },
+      {
+        "id": 4,
+        "visita_id": "v_1763391636568",
+        "item_index": 3,
+        "item_label": "Manejo integrado de pragas ou controle biológico",
+        "status": "sim",
+        "observacao": ""
+      },
+      {
+        "id": 5,
+        "visita_id": "v_1763391636568",
+        "item_index": 4,
+        "item_label": "Sistema de produção agroecológico/orgânico (mesmo sem certificação)",
+        "status": "sim",
+        "observacao": ""
+      },
+      {
+        "id": 6,
+        "visita_id": "v_1763391636568",
+        "item_index": 5,
+        "item_label": "Diversificação produtiva (consórcios, rotação, quintais produtivos)",
+        "status": "sim",
+        "observacao": ""
+      },
+      {
+        "id": 7,
+        "visita_id": "v_1763391636568",
+        "item_index": 6,
+        "item_label": "Presença de área de reserva legal / APP com proteção ativa",
+        "status": "sim",
+        "observacao": ""
+      },
+      {
+        "id": 8,
+        "visita_id": "v_1763391636568",
+        "item_index": 7,
+        "item_label": "Utilização de sementes crioulas, nativas ou adaptadas",
+        "status": "sim",
+        "observacao": ""
+      },
+      {
+        "id": 9,
+        "visita_id": "v_1763391636568",
+        "item_index": 8,
+        "item_label": "Captação e uso racional da água (cisternas, gotejamento, reutilização)",
+        "status": "sim",
+        "observacao": ""
+      },
+      {
+        "id": 10,
+        "visita_id": "v_1763391636568",
+        "item_index": 9,
+        "item_label": "Adequação sanitária/ambiental do local de criação de animais",
+        "status": "sim",
+        "observacao": ""
+      },
+      {
+        "id": 21,
+        "visita_id": "v_1763393466229",
+        "item_index": 0,
+        "item_label": "Orientação técnica ambiental da Emater (placas, materiais, etc.)",
+        "status": "sim",
+        "observacao": ""
+      },
+      {
+        "id": 22,
+        "visita_id": "v_1763393466229",
+        "item_index": 1,
+        "item_label": "Práticas de conservação de solo e água (curvas de nível, terraceamento, barraginhas)",
+        "status": "sim",
+        "observacao": ""
+      },
+      {
+        "id": 23,
+        "visita_id": "v_1763393466229",
+        "item_index": 2,
+        "item_label": "Uso de compostagem ou adubação orgânica",
+        "status": "sim",
+        "observacao": ""
+      },
+      {
+        "id": 24,
+        "visita_id": "v_1763393466229",
+        "item_index": 3,
+        "item_label": "Manejo integrado de pragas ou controle biológico",
+        "status": "nao",
+        "observacao": ""
+      },
+      {
+        "id": 25,
+        "visita_id": "v_1763393466229",
+        "item_index": 5,
+        "item_label": "Diversificação produtiva (consórcios, rotação, quintais produtivos)",
+        "status": "parcial",
+        "observacao": ""
+      },
+      {
+        "id": 26,
+        "visita_id": "v_1763393466229",
+        "item_index": 6,
+        "item_label": "Presença de área de reserva legal / APP com proteção ativa",
+        "status": "parcial",
+        "observacao": ""
+      },
+      {
+        "id": 27,
+        "visita_id": "v_1763393466229",
+        "item_index": 7,
+        "item_label": "Utilização de sementes crioulas, nativas ou adaptadas",
+        "status": "nao",
+        "observacao": ""
+      },
+      {
+        "id": 28,
+        "visita_id": "v_1763393466229",
+        "item_index": 8,
+        "item_label": "Captação e uso racional da água (cisternas, gotejamento, reutilização)",
+        "status": "parcial",
+        "observacao": ""
+      },
+      {
+        "id": 29,
+        "visita_id": "v_1763393466229",
+        "item_index": 9,
+        "item_label": "Adequação sanitária/ambiental do local de criação de animais",
+        "status": "parcial",
+        "observacao": ""
+      }
+    ],
+    "criterio_c2": [
+      {
+        "id": 1,
+        "visita_id": "v_1763391636568",
+        "item_index": 0,
+        "item_label": "Melhoria na produtividade (aumento na produção por área/ciclo)",
+        "status": "sim",
+        "observacao": ""
+      },
+      {
+        "id": 2,
+        "visita_id": "v_1763391636568",
+        "item_index": 1,
+        "item_label": "Melhoria na renda familiar (relato e/ou registros auxiliares)",
+        "status": "sim",
+        "observacao": ""
+      },
+      {
+        "id": 3,
+        "visita_id": "v_1763391636568",
+        "item_index": 2,
+        "item_label": "Adoção de novas práticas com base na orientação da Emater-RO",
+        "status": "sim",
+        "observacao": ""
+      },
+      {
+        "id": 4,
+        "visita_id": "v_1763391636568",
+        "item_index": 3,
+        "item_label": "Melhoria nas condições de trabalho (mecanização, ergonomia, EPIs, etc.)",
+        "status": "sim",
+        "observacao": ""
+      },
+      {
+        "id": 5,
+        "visita_id": "v_1763391636568",
+        "item_index": 4,
+        "item_label": "Boas práticas com potencial de replicação em outras propriedades",
+        "status": "sim",
+        "observacao": ""
+      },
+      {
+        "id": 11,
+        "visita_id": "v_1763393466229",
+        "item_index": 0,
+        "item_label": "Melhoria na produtividade (aumento na produção por área/ciclo)",
+        "status": "nao",
+        "observacao": ""
+      },
+      {
+        "id": 12,
+        "visita_id": "v_1763393466229",
+        "item_index": 1,
+        "item_label": "Melhoria na renda familiar (relato e/ou registros auxiliares)",
+        "status": "nao",
+        "observacao": ""
+      },
+      {
+        "id": 13,
+        "visita_id": "v_1763393466229",
+        "item_index": 2,
+        "item_label": "Adoção de novas práticas com base na orientação da Emater-RO",
+        "status": "nao",
+        "observacao": ""
+      },
+      {
+        "id": 14,
+        "visita_id": "v_1763393466229",
+        "item_index": 3,
+        "item_label": "Melhoria nas condições de trabalho (mecanização, ergonomia, EPIs, etc.)",
+        "status": "nao",
+        "observacao": ""
+      },
+      {
+        "id": 15,
+        "visita_id": "v_1763393466229",
+        "item_index": 4,
+        "item_label": "Boas práticas com potencial de replicação em outras propriedades",
+        "status": "sim",
+        "observacao": ""
+      }
+    ],
+    "criterio_c3": [
+      {
+        "id": 1,
+        "visita_id": "v_1763391636568",
+        "item_index": 0,
+        "item_label": "Estrutura de beneficiamento/processamento (agroindústria, casa de farinha, queijaria)",
+        "status": "sim",
+        "observacao": ""
+      },
+      {
+        "id": 2,
+        "visita_id": "v_1763391636568",
+        "item_index": 1,
+        "item_label": "Rótulos, embalagens ou marca própria para produtos",
+        "status": "sim",
+        "observacao": ""
+      },
+      {
+        "id": 3,
+        "visita_id": "v_1763391636568",
+        "item_index": 2,
+        "item_label": "Certificação (orgânico, SIPPO, produção integrada, etc.)",
+        "status": "sim",
+        "observacao": ""
+      },
+      {
+        "id": 4,
+        "visita_id": "v_1763391636568",
+        "item_index": 3,
+        "item_label": "Apoio técnico da Emater visível na estrutura física/organizacional",
+        "status": "sim",
+        "observacao": ""
+      },
+      {
+        "id": 5,
+        "visita_id": "v_1763391636568",
+        "item_index": 4,
+        "item_label": "Equipamentos que agregam valor (seladoras, balanças, resfriadores, etc.)",
+        "status": "sim",
+        "observacao": ""
+      },
+      {
+        "id": 6,
+        "visita_id": "v_1763391636568",
+        "item_index": 5,
+        "item_label": "Apoio para acesso a linhas de fomento à agroindústria/beneficiamento",
+        "status": "sim",
+        "observacao": ""
+      },
+      {
+        "id": 13,
+        "visita_id": "v_1763393466229",
+        "item_index": 0,
+        "item_label": "Estrutura de beneficiamento/processamento (agroindústria, casa de farinha, queijaria)",
+        "status": "parcial",
+        "observacao": ""
+      },
+      {
+        "id": 14,
+        "visita_id": "v_1763393466229",
+        "item_index": 1,
+        "item_label": "Rótulos, embalagens ou marca própria para produtos",
+        "status": "parcial",
+        "observacao": ""
+      },
+      {
+        "id": 15,
+        "visita_id": "v_1763393466229",
+        "item_index": 2,
+        "item_label": "Certificação (orgânico, SIPPO, produção integrada, etc.)",
+        "status": "parcial",
+        "observacao": ""
+      },
+      {
+        "id": 16,
+        "visita_id": "v_1763393466229",
+        "item_index": 3,
+        "item_label": "Apoio técnico da Emater visível na estrutura física/organizacional",
+        "status": "parcial",
+        "observacao": ""
+      },
+      {
+        "id": 17,
+        "visita_id": "v_1763393466229",
+        "item_index": 4,
+        "item_label": "Equipamentos que agregam valor (seladoras, balanças, resfriadores, etc.)",
+        "status": "parcial",
+        "observacao": ""
+      },
+      {
+        "id": 18,
+        "visita_id": "v_1763393466229",
+        "item_index": 5,
+        "item_label": "Apoio para acesso a linhas de fomento à agroindústria/beneficiamento",
+        "status": "parcial",
+        "observacao": ""
+      }
+    ],
+    "criterio_c4": [
+      {
+        "id": 1,
+        "visita_id": "v_1763391636568",
+        "item_index": 0,
+        "item_label": "Evidência de venda para PAA/PNAE (notas, entregas, contratos, etc.)",
+        "status": "sim",
+        "observacao": "",
+        "descricao_comercializacao": "aa"
+      },
+      {
+        "id": 2,
+        "visita_id": "v_1763391636568",
+        "item_index": 1,
+        "item_label": "Participação em feiras, circuitos curtos ou cooperativas de comercialização",
+        "status": "sim",
+        "observacao": "",
+        "descricao_comercializacao": "aa"
+      },
+      {
+        "id": 3,
+        "visita_id": "v_1763391636568",
+        "item_index": 2,
+        "item_label": "Relação comercial com mercados locais/regionais (supermercados, restaurantes, etc.)",
+        "status": "sim",
+        "observacao": "",
+        "descricao_comercializacao": "aa"
+      },
+      {
+        "id": 4,
+        "visita_id": "v_1763391636568",
+        "item_index": 3,
+        "item_label": "Materiais de divulgação/canais de venda direta (redes sociais, QR code, etc.)",
+        "status": "sim",
+        "observacao": "",
+        "descricao_comercializacao": "aa"
+      },
+      {
+        "id": 5,
+        "visita_id": "v_1763391636568",
+        "item_index": 4,
+        "item_label": "Articulação com centrais de abastecimento ou agroindústrias regionais",
+        "status": "sim",
+        "observacao": "",
+        "descricao_comercializacao": "aa"
+      },
+      {
+        "id": 11,
+        "visita_id": "v_1763393466229",
+        "item_index": 0,
+        "item_label": "Evidência de venda para PAA/PNAE (notas, entregas, contratos, etc.)",
+        "status": "sim",
+        "observacao": "",
+        "descricao_comercializacao": ""
+      },
+      {
+        "id": 12,
+        "visita_id": "v_1763393466229",
+        "item_index": 1,
+        "item_label": "Participação em feiras, circuitos curtos ou cooperativas de comercialização",
+        "status": "nao",
+        "observacao": "",
+        "descricao_comercializacao": ""
+      },
+      {
+        "id": 13,
+        "visita_id": "v_1763393466229",
+        "item_index": 2,
+        "item_label": "Relação comercial com mercados locais/regionais (supermercados, restaurantes, etc.)",
+        "status": "nao",
+        "observacao": "",
+        "descricao_comercializacao": ""
+      },
+      {
+        "id": 14,
+        "visita_id": "v_1763393466229",
+        "item_index": 3,
+        "item_label": "Materiais de divulgação/canais de venda direta (redes sociais, QR code, etc.)",
+        "status": "nao",
+        "observacao": "",
+        "descricao_comercializacao": ""
+      },
+      {
+        "id": 15,
+        "visita_id": "v_1763393466229",
+        "item_index": 4,
+        "item_label": "Articulação com centrais de abastecimento ou agroindústrias regionais",
+        "status": "sim",
+        "observacao": "",
+        "descricao_comercializacao": ""
+      }
+    ],
+    "barreiras": [
+      {
+        "id": 1,
+        "visita_id": "v_1763391636568",
+        "impedimentos_praticas_sustentaveis": "aa",
+        "gargalos_comercializacao": "a",
+        "infraestrutura_beneficiamento": "a",
+        "adequacao_assistencia_tecnica": "s"
+      },
+      {
+        "id": 3,
+        "visita_id": "v_1763393466229",
+        "impedimentos_praticas_sustentaveis": "a",
+        "gargalos_comercializacao": "a",
+        "infraestrutura_beneficiamento": "a",
+        "adequacao_assistencia_tecnica": "a"
+      }
+    ],
+    "sintese": [
+      {
+        "id": 1,
+        "visita_id": "v_1763391636568",
+        "texto_sintese": ""
+      },
+      {
+        "id": 3,
+        "visita_id": "v_1763393466229",
+        "texto_sintese": "aaa"
+      }
+    ]
+  }
+}
