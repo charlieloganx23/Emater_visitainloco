@@ -206,6 +206,17 @@
           </div>
           <div class="card-actions">
             <input id="tableSearch" class="input-search" placeholder="Buscar por agricultor ou município...">
+            <select id="filterMunicipio" class="input-search" style="max-width: 200px;">
+              <option value="">Todos os municípios</option>
+            </select>
+            <select id="filterPeriodo" class="input-search" style="max-width: 180px;">
+              <option value="">Todos os períodos</option>
+              <option value="7">Últimos 7 dias</option>
+              <option value="30">Últimos 30 dias</option>
+              <option value="90">Últimos 90 dias</option>
+            </select>
+            <button id="btnExportExcel" class="btn primary ghost small">📊 Excel</button>
+            <button id="btnExportPDF" class="btn primary ghost small">📄 PDF</button>
             <button id="btnClearAll" class="btn danger ghost small">Limpar todas</button>
           </div>
         </header>
@@ -219,7 +230,7 @@
                 <th>Data</th>
                 <th>% Sustentabilidade</th>
                 <th>Mercados (C4)</th>
-                <th></th>
+                <th style="width: 140px;">Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -299,8 +310,14 @@
   </div>
 </div>
 
+<!-- Bibliotecas de exportação -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
 <script src="db.js"></script>
 <script src="charts.js"></script>
+<script src="filters-export.js"></script>
 <script src="ui.js"></script>
 </body>
 </html>

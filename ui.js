@@ -239,17 +239,20 @@ async function refreshTable() {
   const tbody = document.querySelector("#tableEntrevistas tbody");
   const empty = document.getElementById("tableEmpty");
   const list = await db_list();
-  const search = (document.getElementById("tableSearch")?.value || "").toLowerCase();
+  
+  // Atualizar cache global e filtro de municípios
+  allVisitas = list;
+  updateMunicipioFilter(list);
+  
+  // Aplicar filtros
+  const filtered = applyFilters(list);
 
   tbody.innerHTML = "";
   let countRows = 0;
 
-  list.forEach(r => {
+  filtered.forEach(r => {
     const ag = (r.agricultor || "").toString();
     const mu = (r.municipio || "").toString();
-    if (search && !ag.toLowerCase().includes(search) && !mu.toLowerCase().includes(search)) {
-      return;
-    }
     const idx = computeSustainabilityIndex(r);
     const mercados = hasMarketInsertion(r) ? "Sim" : "Não";
     const tr = document.createElement("tr");
@@ -259,7 +262,11 @@ async function refreshTable() {
       <td>${r.data_visita || r.dataVisita || "-"}</td>
       <td>${idx}%</td>
       <td><span class="badge-pill">${mercados}</span></td>
-      <td><button type="button" class="btn ghost small" data-open-espelho="${r.id}">Ver espelho</button></td>
+      <td>
+        <button type="button" class="btn ghost small" data-open-espelho="${r.id}">Ver</button>
+        <button type="button" class="btn primary ghost small" data-duplicate="${r.id}" title="Duplicar visita">📋</button>
+        <button type="button" class="btn danger ghost small" data-delete="${r.id}" title="Deletar visita">🗑️</button>
+      </td>
     `;
     tbody.appendChild(tr);
     countRows++;
@@ -471,11 +478,40 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", () => switchView(btn.dataset.view));
   });
 
-  document.getElementById("tableEntrevistas").addEventListener("click", (e) => {
-    const btn = e.target.closest("[data-open-espelho]");
-    if (!btn) return;
-    const id = btn.getAttribute("data-open-espelho");
-    openEspelho(id);
+  document.getElementById("tableEntrevistas").addEventListener("click", async (e) => {
+    // Abrir espelho
+    const btnEspelho = e.target.closest("[data-open-espelho]");
+    if (btnEspelho) {
+      const id = btnEspelho.getAttribute("data-open-espelho");
+      openEspelho(id);
+      return;
+    }
+    
+    // Duplicar visita
+    const btnDuplicate = e.target.closest("[data-duplicate]");
+    if (btnDuplicate) {
+      const id = btnDuplicate.getAttribute("data-duplicate");
+      await duplicateVisita(id);
+      return;
+    }
+    
+    // Deletar visita individual
+    const btnDelete = e.target.closest("[data-delete]");
+    if (btnDelete) {
+      const id = btnDelete.getAttribute("data-delete");
+      if (confirm("Tem certeza que deseja excluir esta visita?")) {
+        try {
+          await db_delete(id);
+          await refreshTable();
+          await updateDashboard();
+          alert("Visita excluída com sucesso!");
+        } catch (error) {
+          alert("Erro ao excluir visita.");
+          console.error(error);
+        }
+      }
+      return;
+    }
   });
 
   document.getElementById("btnCloseModal").addEventListener("click", closeEspelho);
@@ -483,7 +519,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target.id === "modalOverlay") closeEspelho();
   });
 
-  document.getElementById("tableSearch").addEventListener("input", refreshTable);
+  // Inicializar filtros e exportação
+  initFiltersAndExports();
+
   document.getElementById("btnClearAll").addEventListener("click", async () => {
     if (confirm("Tem certeza que deseja excluir todas as visitas registradas?")) {
       try {
