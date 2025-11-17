@@ -149,10 +149,10 @@ app.post("/api/visitas", async (req, res) => {
     
     const { id, agricultor, municipio, propriedade, dataVisita, auditor, tecnico, c1, c2, c3, c4, barreiras, sintese } = req.body;
     
-    // Inserir visita principal
+    // Inserir visita principal (converter string vazia para NULL)
     await connection.query(
       'INSERT INTO visitas (id, agricultor, municipio, propriedade, data_visita, auditor, tecnico) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [id, agricultor, municipio, propriedade, dataVisita, auditor, tecnico]
+      [id, agricultor, municipio, propriedade, dataVisita || null, auditor, tecnico]
     );
     
     // Inserir critérios C1

@@ -99,7 +99,14 @@ async function updateDashboard() {
 
   const crit = document.getElementById("chartCriteria");
   crit.innerHTML = "";
-  const list = db_list();
+  const list = await db_list();
+  
+  // Garantir que list é um array
+  if (!Array.isArray(list)) {
+    console.error('db_list não retornou array:', list);
+    return;
+  }
+  
   const critStats = { c1: { sim: 0, total: 0 }, c2: { sim: 0, total: 0 }, c3: { sim: 0, total: 0 }, c4: { sim: 0, total: 0 } };
 
   list.forEach(r => {

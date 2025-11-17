@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS visitas (
     agricultor VARCHAR(255),
     municipio VARCHAR(255),
     propriedade VARCHAR(255),
-    data_visita DATE,
+    data_visita DATE NULL,
     auditor VARCHAR(255),
     tecnico VARCHAR(255),
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
