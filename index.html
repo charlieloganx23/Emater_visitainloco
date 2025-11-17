@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Observação In Loco – Emater-RO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/dashboard.css">
+  <link rel="stylesheet" href="styles/form.css">
+  <link rel="stylesheet" href="styles/table.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="logo-area">
+      <div class="logo-dot"></div>
+      <div class="logo-text">
+        <span class="logo-title">In Loco</span>
+        <span class="logo-sub">Auditoria Emater-RO</span>
+      </div>
+    </div>
+    <nav class="nav">
+      <button class="nav-item active" data-view="view-form">
+        <span>➕ Nova visita</span>
+      </button>
+      <button class="nav-item" data-view="view-table">
+        <span>📋 Entrevistas</span>
+      </button>
+      <button class="nav-item" data-view="view-dashboard">
+        <span>📊 Painel & KPIs</span>
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <span class="tag">Layout clean (Visual 3)</span>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <h1 id="topbar-title">Nova visita in loco</h1>
+        <p id="topbar-subtitle">Preencha os dados da propriedade e registre as evidências observadas.</p>
+      </div>
+      <div class="topbar-actions">
+        <button id="btnExportJson" class="btn ghost small">Exportar tudo (.json)</button>
+        <button id="btnExportCsv" class="btn ghost small">Exportar tudo (.csv)</button>
+      </div>
+    </header>
+
+    <!-- VIEW: FORM -->
+    <section id="view-form" class="view active">
+      <div class="card">
+        <div class="form-header">
+          <div class="form-stepper">
+            <div class="step-dot active" data-step="1">1</div>
+            <div class="step-line"></div>
+            <div class="step-dot" data-step="2">2</div>
+            <div class="step-line"></div>
+            <div class="step-dot" data-step="3">3</div>
+            <div class="step-line"></div>
+            <div class="step-dot" data-step="4">4</div>
+            <div class="step-line"></div>
+            <div class="step-dot" data-step="5">5</div>
+            <div class="step-line"></div>
+            <div class="step-dot" data-step="6">6</div>
+            <div class="step-line"></div>
+            <div class="step-dot" data-step="7">7</div>
+          </div>
+          <div class="form-progress">
+            <div class="form-progress-bar">
+              <div class="form-progress-fill" id="formProgressFill"></div>
+            </div>
+            <span id="formProgressLabel">Etapa 1 de 7</span>
+          </div>
+        </div>
+
+        <form id="formInLoco">
+          <!-- STEP 1 -->
+          <div class="form-step active" data-step="1">
+            <h2>Identificação da visita</h2>
+            <p class="muted">Campos básicos da propriedade visitada e da equipe envolvida.</p>
+
+            <div class="grid-2">
+              <div class="form-group">
+                <label>Nome do agricultor</label>
+                <input name="agricultor" autocomplete="off">
+              </div>
+              <div class="form-group">
+                <label>Município / Localidade</label>
+                <input name="municipio" autocomplete="off">
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="form-group">
+                <label>Nome da propriedade</label>
+                <input name="propriedade" autocomplete="off">
+              </div>
+              <div class="form-group">
+                <label>Data da visita</label>
+                <input type="date" name="dataVisita">
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="form-group">
+                <label>Auditor responsável</label>
+                <input name="auditor" autocomplete="off">
+              </div>
+              <div class="form-group">
+                <label>Técnico acompanhante (se houver)</label>
+                <input name="tecnico" autocomplete="off">
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2 -->
+          <div class="form-step" data-step="2">
+            <h2>Práticas produtivas sustentáveis (C1)</h2>
+            <p class="muted">Registre as evidências observadas em campo quanto às práticas ambientais.</p>
+            <div id="c1Container" class="criteria-grid"></div>
+          </div>
+
+          <!-- STEP 3 -->
+          <div class="form-step" data-step="3">
+            <h2>Estrutura para agregação de valor (C3)</h2>
+            <p class="muted">Verifique se há infraestrutura e apoio voltados ao beneficiamento e à agregação de valor.</p>
+            <div id="c3Container" class="criteria-grid"></div>
+          </div>
+
+          <!-- STEP 4 -->
+          <div class="form-step" data-step="4">
+            <h2>Inserção em mercados (C4)</h2>
+            <p class="muted">Observe a relação da propriedade com mercados institucionais e privados.</p>
+            <div id="c4Container" class="criteria-grid"></div>
+
+            <div class="form-group">
+              <label>A comercialização é realizada de forma autônoma ou por meio de organização coletiva?</label>
+              <textarea name="c4_descr" rows="3"></textarea>
+            </div>
+          </div>
+
+          <!-- STEP 5 -->
+          <div class="form-step" data-step="5">
+            <h2>Resultados percebidos (C2)</h2>
+            <p class="muted">Registre os efeitos observados ou relatados na propriedade.</p>
+            <div id="c2Container" class="criteria-grid"></div>
+          </div>
+
+          <!-- STEP 6 -->
+          <div class="form-step" data-step="6">
+            <h2>Barreiras e limitações observadas</h2>
+            <p class="muted">Descreva de forma sintética os principais obstáculos identificados.</p>
+
+            <div class="form-group">
+              <label>Impedimentos à adoção de práticas sustentáveis</label>
+              <textarea name="b1" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Principais gargalos para comercialização</label>
+              <textarea name="b2" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Infraestrutura de beneficiamento está em uso pleno? Se não, por quê?</label>
+              <textarea name="b3" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <label>A assistência técnica da Emater-RO cobre as demandas percebidas?</label>
+              <textarea name="b4" rows="3"></textarea>
+            </div>
+          </div>
+
+          <!-- STEP 7 -->
+          <div class="form-step" data-step="7">
+            <h2>Síntese do auditor</h2>
+            <p class="muted">Faça uma leitura integrada das evidências, contradições, boas práticas e fragilidades.</p>
+
+            <div class="form-group">
+              <label>Texto livre (até 15 linhas)</label>
+              <textarea name="sintese" rows="8"></textarea>
+            </div>
+
+            <div class="form-footer-actions">
+              <button type="button" id="btnLimpar" class="btn ghost">Limpar formulário</button>
+              <div class="spacer"></div>
+              <button type="button" id="btnSalvarRascunho" class="btn ghost">Salvar rascunho</button>
+              <button type="submit" class="btn primary">Concluir visita e salvar</button>
+            </div>
+          </div>
+
+          <div class="form-nav">
+            <button type="button" id="btnPrev" class="btn ghost">◀ Anterior</button>
+            <button type="button" id="btnNext" class="btn primary">Próximo ▶</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- VIEW: TABLE -->
+    <section id="view-table" class="view">
+      <div class="card">
+        <header class="card-header">
+          <div>
+            <h2>Entrevistas coletadas</h2>
+            <p class="muted">Clique em uma linha para abrir o espelho completo da visita.</p>
+          </div>
+          <div class="card-actions">
+            <input id="tableSearch" class="input-search" placeholder="Buscar por agricultor ou município...">
+            <button id="btnClearAll" class="btn danger ghost small">Limpar todas</button>
+          </div>
+        </header>
+
+        <div class="table-wrapper">
+          <table id="tableEntrevistas">
+            <thead>
+              <tr>
+                <th>Agricultor</th>
+                <th>Município</th>
+                <th>Data</th>
+                <th>% Sustentabilidade</th>
+                <th>Mercados (C4)</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- preenchido via JS -->
+            </tbody>
+          </table>
+          <div id="tableEmpty" class="empty-state">
+            Nenhuma visita salva ainda. Conclua um formulário para vê-lo aqui.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW: DASHBOARD -->
+    <section id="view-dashboard" class="view">
+      <div class="grid-dashboard">
+        <div class="card kpi-card">
+          <h2>Resumo geral</h2>
+          <div class="kpi-grid">
+            <div class="kpi">
+              <span class="kpi-label">Visitas registradas</span>
+              <span class="kpi-value" id="kpiTotalVisitas">0</span>
+            </div>
+            <div class="kpi">
+              <span class="kpi-label">% itens “Sim” (geral)</span>
+              <span class="kpi-value" id="kpiPctSim">0%</span>
+            </div>
+            <div class="kpi">
+              <span class="kpi-label">Índice médio C1 (sustentabilidade)</span>
+              <span class="kpi-value" id="kpiC1">0%</span>
+            </div>
+            <div class="kpi">
+              <span class="kpi-label">Propriedades com inserção em mercados</span>
+              <span class="kpi-value" id="kpiMercados">0%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card chart-card">
+          <h2>Distribuição geral das respostas</h2>
+          <div class="chart-bar" id="chartSimNaoParcial">
+            <!-- barras desenhadas via JS -->
+          </div>
+        </div>
+
+        <div class="card chart-card">
+          <h2>Comparativo por critério</h2>
+          <div class="chart-bars-group" id="chartCriteria">
+            <!-- barras C1, C2, C3, C4 -->
+          </div>
+        </div>
+
+        <div class="card chart-card">
+          <h2>Série temporal de visitas</h2>
+          <div class="chart-timeline" id="chartTimeline">
+            <!-- linha simples via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- MODAL ESPELHO -->
+<div id="modalOverlay" class="modal-overlay hidden">
+  <div class="modal">
+    <header class="modal-header">
+      <div>
+        <h2>Espelho da visita</h2>
+        <p class="muted" id="modalSub"></p>
+      </div>
+      <button id="btnCloseModal" class="btn ghost small">Fechar</button>
+    </header>
+    <div class="modal-body" id="modalBody">
+      <!-- conteúdo via JS -->
+    </div>
+  </div>
+</div>
+
+<script src="db.js"></script>
+<script src="charts.js"></script>
+<script src="ui.js"></script>
+</body>
+</html>
