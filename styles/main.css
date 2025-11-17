@@ -338,6 +338,118 @@ body {
   color: #374151;
 }
 
+/* Sync Status */
+.sync-status-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sync-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+
+.sync-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #9ca3af;
+  flex-shrink: 0;
+}
+
+.sync-status.online .sync-indicator {
+  background: #22c55e;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
+}
+
+.sync-status.offline .sync-indicator {
+  background: #ef4444;
+}
+
+.sync-status.syncing .sync-indicator {
+  background: #3b82f6;
+  animation: pulse 1.5s infinite;
+}
+
+.sync-status.pending .sync-indicator {
+  background: #f59e0b;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.sync-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.sync-main-text {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.sync-sub-text {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.btn-sync {
+  width: 100%;
+  padding: 8px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-sync:hover {
+  background: #2563eb;
+}
+
+.btn-sync:active {
+  transform: scale(0.98);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
 @media (max-width: 880px) {
   .app-shell {
     grid-template-columns: 1fr;

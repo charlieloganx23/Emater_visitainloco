@@ -250,6 +250,150 @@ app.delete("/api/visitas", async (req, res) => {
   }
 });
 
+// POST sincronização em batch (offline → online)
+app.post("/api/visitas/sync", async (req, res) => {
+  const { visitas } = req.body;
+  
+  if (!Array.isArray(visitas) || visitas.length === 0) {
+    return res.status(400).json({ error: 'Array de visitas inválido' });
+  }
+  
+  console.log(`🔄 Sincronização em batch: ${visitas.length} visita(s)`);
+  
+  const results = [];
+  const connection = await pool.getConnection();
+  
+  try {
+    for (const visitaData of visitas) {
+      try {
+        // Verificar se já existe
+        const [existing] = await connection.query('SELECT id FROM visitas WHERE id = ?', [visitaData.id]);
+        
+        if (existing.length > 0) {
+          // Já existe, pular
+          results.push({
+            id: visitaData.id,
+            status: 'skipped',
+            message: 'Visita já existe no banco'
+          });
+          continue;
+        }
+        
+        // Inserir visita
+        await connection.query(
+          `INSERT INTO visitas (id, agricultor, municipio, propriedade, data_visita, auditor, tecnico) 
+           VALUES (?, ?, ?, ?, ?, ?, ?)`,
+          [
+            visitaData.id,
+            visitaData.agricultor,
+            visitaData.municipio,
+            visitaData.propriedade,
+            visitaData.data_visita || null,
+            visitaData.auditor,
+            visitaData.tecnico
+          ]
+        );
+        
+        // Inserir critérios C1, C2, C3, C4
+        if (Array.isArray(visitaData.c1)) {
+          for (const item of visitaData.c1) {
+            await connection.query(
+              `INSERT INTO criterio_c1 (visita_id, item_index, item_label, status, observacao) 
+               VALUES (?, ?, ?, ?, ?)`,
+              [visitaData.id, item.item_index, item.item_label, item.status, item.observacao]
+            );
+          }
+        }
+        
+        if (Array.isArray(visitaData.c2)) {
+          for (const item of visitaData.c2) {
+            await connection.query(
+              `INSERT INTO criterio_c2 (visita_id, item_index, item_label, status, observacao) 
+               VALUES (?, ?, ?, ?, ?)`,
+              [visitaData.id, item.item_index, item.item_label, item.status, item.observacao]
+            );
+          }
+        }
+        
+        if (Array.isArray(visitaData.c3)) {
+          for (const item of visitaData.c3) {
+            await connection.query(
+              `INSERT INTO criterio_c3 (visita_id, item_index, item_label, status, observacao) 
+               VALUES (?, ?, ?, ?, ?)`,
+              [visitaData.id, item.item_index, item.item_label, item.status, item.observacao]
+            );
+          }
+        }
+        
+        if (Array.isArray(visitaData.c4)) {
+          for (const item of visitaData.c4) {
+            await connection.query(
+              `INSERT INTO criterio_c4 (visita_id, item_index, item_label, status, observacao, descricao_comercializacao) 
+               VALUES (?, ?, ?, ?, ?, ?)`,
+              [visitaData.id, item.item_index, item.item_label, item.status, item.observacao, item.descricao_comercializacao || null]
+            );
+          }
+        }
+        
+        // Barreiras
+        if (visitaData.barreiras) {
+          const b = visitaData.barreiras;
+          await connection.query(
+            `INSERT INTO barreiras (visita_id, impedimentos_praticas_sustentaveis, gargalos_comercializacao, 
+             infraestrutura_beneficiamento, adequacao_assistencia_tecnica) 
+             VALUES (?, ?, ?, ?, ?)`,
+            [visitaData.id, b.impedimentos_praticas_sustentaveis, b.gargalos_comercializacao, 
+             b.infraestrutura_beneficiamento, b.adequacao_assistencia_tecnica]
+          );
+        }
+        
+        // Síntese
+        if (visitaData.sintese && visitaData.sintese.texto_sintese) {
+          await connection.query(
+            `INSERT INTO sintese (visita_id, texto_sintese) VALUES (?, ?)`,
+            [visitaData.id, visitaData.sintese.texto_sintese]
+          );
+        }
+        
+        results.push({
+          id: visitaData.id,
+          status: 'success',
+          message: 'Visita sincronizada com sucesso'
+        });
+        
+      } catch (itemError) {
+        console.error(`Erro ao sincronizar visita ${visitaData.id}:`, itemError);
+        results.push({
+          id: visitaData.id,
+          status: 'error',
+          message: itemError.message
+        });
+      }
+    }
+    
+    const successCount = results.filter(r => r.status === 'success').length;
+    const errorCount = results.filter(r => r.status === 'error').length;
+    const skippedCount = results.filter(r => r.status === 'skipped').length;
+    
+    console.log(`✅ Sync completo: ${successCount} sucesso, ${errorCount} erros, ${skippedCount} pulados`);
+    
+    res.json({
+      message: 'Sincronização em batch concluída',
+      total: visitas.length,
+      success: successCount,
+      errors: errorCount,
+      skipped: skippedCount,
+      results: results
+    });
+    
+  } catch (error) {
+    console.error('Erro na sincronização em batch:', error);
+    res.status(500).json({ error: 'Erro na sincronização em batch', details: error.message });
+  } finally {
+    connection.release();
+  }
+});
+
 // Rota principal
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
