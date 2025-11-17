@@ -30,31 +30,31 @@ async function initializeDatabase() {
   const connection = await pool.getConnection();
   
   try {
-    // Verificar se as tabelas existem
-    const [tables] = await connection.query("SHOW TABLES LIKE 'visitas'");
+    console.log('📥 Verificando/criando estrutura do banco de dados...');
     
-    if (tables.length === 0) {
-      console.log('📥 Criando estrutura do banco de dados...');
-      
-      // Ler e executar schema-clean.sql (sem CREATE DATABASE e USE)
-      const schema = fs.readFileSync('schema-clean.sql', 'utf8');
-      
-      // Dividir o SQL em comandos individuais e executar um por um
-      const statements = schema
-        .split(';')
-        .map(s => s.trim())
-        .filter(s => s.length > 0 && !s.startsWith('--'));
-      
-      for (const statement of statements) {
-        if (statement.trim()) {
+    // Ler e executar schema-clean.sql (usa CREATE TABLE IF NOT EXISTS)
+    const schema = fs.readFileSync('schema-clean.sql', 'utf8');
+    
+    // Dividir o SQL em comandos individuais e executar um por um
+    const statements = schema
+      .split(';')
+      .map(s => s.trim())
+      .filter(s => s.length > 0 && !s.startsWith('--'));
+    
+    for (const statement of statements) {
+      if (statement.trim()) {
+        try {
           await connection.query(statement);
+        } catch (err) {
+          console.error('⚠️  Erro ao executar statement:', err.message);
+          // Continuar mesmo com erro (tabela pode já existir)
         }
       }
-      
-      console.log('✅ Banco de dados inicializado com sucesso');
-    } else {
-      console.log('✅ Banco de dados já inicializado');
     }
+    
+    // Verificar se as tabelas foram criadas
+    const [tables] = await connection.query("SHOW TABLES");
+    console.log(`✅ Banco de dados pronto com ${tables.length} tabelas`);
     
     console.log('✅ Conectado ao MySQL no Railway');
     connection.release();
