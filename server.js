@@ -36,11 +36,16 @@ async function initializeDatabase() {
     const schema = fs.readFileSync('schema-clean.sql', 'utf8');
     console.log(`📄 Schema lido: ${schema.length} caracteres`);
     
-    // Dividir o SQL em comandos individuais e executar um por um
-    const statements = schema
+    // Remover comentários e dividir por ponto-e-vírgula
+    const cleanedSchema = schema
+      .split('\n')
+      .filter(line => !line.trim().startsWith('--'))
+      .join('\n');
+    
+    const statements = cleanedSchema
       .split(';')
       .map(s => s.trim())
-      .filter(s => s.length > 0 && !s.startsWith('--'));
+      .filter(s => s.length > 0);
     
     console.log(`📝 ${statements.length} statements encontrados`);
     
@@ -53,7 +58,6 @@ async function initializeDatabase() {
         } catch (err) {
           console.error('⚠️  Erro ao executar statement:', err.message);
           console.error('Statement:', statement.substring(0, 100) + '...');
-          // Continuar mesmo com erro (tabela pode já existir)
         }
       }
     }
@@ -63,6 +67,7 @@ async function initializeDatabase() {
     // Verificar se as tabelas foram criadas
     const [tables] = await connection.query("SHOW TABLES");
     console.log(`✅ Banco de dados pronto com ${tables.length} tabelas`);
+    tables.forEach(t => console.log(`  - ${Object.values(t)[0]}`));
     
     console.log('✅ Conectado ao MySQL no Railway');
     connection.release();
