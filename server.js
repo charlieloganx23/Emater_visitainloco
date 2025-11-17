@@ -24,15 +24,41 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-// Testar conexão
-pool.getConnection()
-  .then(connection => {
+// Função para inicializar banco de dados
+async function initializeDatabase() {
+  const fs = require('fs');
+  const connection = await pool.getConnection();
+  
+  try {
+    // Verificar se as tabelas existem
+    const [tables] = await connection.query("SHOW TABLES LIKE 'visitas'");
+    
+    if (tables.length === 0) {
+      console.log('📥 Criando estrutura do banco de dados...');
+      
+      // Ler e executar schema.sql
+      const schema = fs.readFileSync('schema.sql', 'utf8');
+      await connection.query(schema);
+      
+      console.log('✅ Banco de dados inicializado com sucesso');
+    } else {
+      console.log('✅ Banco de dados já inicializado');
+    }
+    
     console.log('✅ Conectado ao MySQL no Railway');
     connection.release();
-  })
-  .catch(err => {
-    console.error('❌ Erro ao conectar ao MySQL:', err.message);
-  });
+  } catch (err) {
+    console.error('❌ Erro ao inicializar banco de dados:', err.message);
+    connection.release();
+    throw err;
+  }
+}
+
+// Inicializar banco e depois continuar
+initializeDatabase().catch(err => {
+  console.error('❌ Falha crítica ao inicializar:', err);
+  process.exit(1);
+});
 
 // Rotas de API
 
