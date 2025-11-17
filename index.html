@@ -66,6 +66,10 @@
         <p id="topbar-subtitle">Preencha os dados da propriedade e registre as evidências observadas.</p>
       </div>
       <div class="topbar-actions">
+        <button id="btnSyncTopbar" class="btn primary small" title="Sincronizar dados offline">
+          <span id="syncIcon">🔄</span> Sincronizar
+          <span id="syncBadge" class="sync-badge" style="display: none;">0</span>
+        </button>
         <button id="btnExportJson" class="btn ghost small">Exportar tudo (.json)</button>
         <button id="btnExportCsv" class="btn ghost small">Exportar tudo (.csv)</button>
       </div>
@@ -453,6 +457,8 @@ if ('serviceWorker' in navigator) {
 function initSyncUI() {
   const statusEl = document.getElementById('syncStatus');
   const btnSync = document.getElementById('btnForceSync');
+  const btnSyncTopbar = document.getElementById('btnSyncTopbar');
+  const syncBadge = document.getElementById('syncBadge');
   
   if (!statusEl || !btnSync) return;
   
@@ -464,15 +470,29 @@ function initSyncUI() {
     updateSyncStatus(event, data);
   });
   
-  // Botão de sincronização manual
+  // Botão de sincronização manual (sidebar)
   btnSync.addEventListener('click', () => {
     syncManager.forcSync();
   });
+  
+  // Botão de sincronização manual (topbar)
+  if (btnSyncTopbar) {
+    btnSyncTopbar.addEventListener('click', async () => {
+      const status = await syncManager.getStatus();
+      if (status.pending > 0 || !navigator.onLine) {
+        syncManager.forcSync();
+      } else {
+        showToast('✅ Todos os dados já estão sincronizados', 'success');
+      }
+    });
+  }
 }
 
 async function updateSyncStatus(event = null, data = null) {
   const statusEl = document.getElementById('syncStatus');
   const btnSync = document.getElementById('btnForceSync');
+  const btnSyncTopbar = document.getElementById('btnSyncTopbar');
+  const syncBadge = document.getElementById('syncBadge');
   
   if (!statusEl) return;
   
@@ -481,6 +501,29 @@ async function updateSyncStatus(event = null, data = null) {
   
   // Remover classes antigas
   statusEl.className = 'sync-status';
+  
+  // Atualizar botão do topbar
+  if (btnSyncTopbar) {
+    btnSyncTopbar.className = 'btn primary small';
+    
+    if (isSyncing) {
+      btnSyncTopbar.classList.add('syncing');
+      btnSyncTopbar.disabled = true;
+      if (syncBadge) syncBadge.style.display = 'none';
+    } else {
+      btnSyncTopbar.disabled = false;
+      
+      if (pending > 0) {
+        btnSyncTopbar.classList.add('pending');
+        if (syncBadge) {
+          syncBadge.textContent = pending;
+          syncBadge.style.display = 'inline-block';
+        }
+      } else {
+        if (syncBadge) syncBadge.style.display = 'none';
+      }
+    }
+  }
   
   if (isSyncing) {
     statusEl.classList.add('syncing');

@@ -428,6 +428,41 @@ body {
   transform: scale(0.98);
 }
 
+/* Sync Badge */
+.sync-badge {
+  background: #ef4444;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 18px;
+  text-align: center;
+  line-height: 1;
+}
+
+#btnSyncTopbar {
+  position: relative;
+}
+
+#btnSyncTopbar.syncing #syncIcon {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+}
+
+#btnSyncTopbar.pending {
+  background: #f59e0b;
+}
+
+#btnSyncTopbar.pending:hover {
+  background: #d97706;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 @keyframes slideIn {
   from {
     transform: translateX(100%);
