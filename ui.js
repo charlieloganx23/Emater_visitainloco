@@ -377,7 +377,14 @@ async function switchView(viewId) {
   } else if (viewId === "view-dashboard") {
     title.textContent = "Painel de indicadores";
     sub.textContent = "Acompanhe o retrato consolidado das propriedades visitadas.";
-    await updateDashboard();
+    
+    // Se dashboard.js está carregado, usar versão avançada
+    if (typeof initDashboard !== 'undefined') {
+      initDashboard();
+    } else {
+      // Fallback para versão básica
+      await updateDashboard();
+    }
   }
 }
 

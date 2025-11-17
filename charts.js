@@ -67,6 +67,12 @@ async function computeMetrics() {
 }
 
 async function updateDashboard() {
+  // Se dashboard.js foi carregado, usar a função avançada
+  if (typeof initDashboard !== 'undefined') {
+    return;
+  }
+
+  // Fallback para dashboard básico (charts.js original)
   const m = await computeMetrics();
   const elTotal = document.getElementById("kpiTotalVisitas");
   if (!elTotal) return; // dashboard ainda não montado

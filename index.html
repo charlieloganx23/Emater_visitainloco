@@ -245,8 +245,28 @@
     </section>
 
     <!-- VIEW: DASHBOARD -->
+        <!-- VIEW: DASHBOARD -->
     <section id="view-dashboard" class="view">
+      <!-- Filtros do Dashboard -->
+      <div class="dashboard-filters">
+        <select id="dashFilterMunicipio">
+          <option value="">Todos os municípios</option>
+        </select>
+        <select id="dashFilterPeriodo">
+          <option value="">Todos os períodos</option>
+          <option value="7">Últimos 7 dias</option>
+          <option value="30">Últimos 30 dias</option>
+          <option value="90">Últimos 90 dias</option>
+        </select>
+        <select id="dashFilterTecnico">
+          <option value="">Todos os técnicos</option>
+        </select>
+        <button id="btnApplyDashFilters" class="btn-apply">Aplicar</button>
+        <button id="btnClearDashFilters" class="btn-clear">Limpar</button>
+      </div>
+
       <div class="grid-dashboard">
+        <!-- KPIs Resumo -->
         <div class="card kpi-card">
           <h2>Resumo geral</h2>
           <div class="kpi-grid">
@@ -255,7 +275,7 @@
               <span class="kpi-value" id="kpiTotalVisitas">0</span>
             </div>
             <div class="kpi">
-              <span class="kpi-label">% itens “Sim” (geral)</span>
+              <span class="kpi-label">% itens "Sim" (geral)</span>
               <span class="kpi-value" id="kpiPctSim">0%</span>
             </div>
             <div class="kpi">
@@ -269,6 +289,7 @@
           </div>
         </div>
 
+        <!-- Distribuição Barras Simples -->
         <div class="card chart-card">
           <h2>Distribuição geral das respostas</h2>
           <div class="chart-bar" id="chartSimNaoParcial">
@@ -276,6 +297,31 @@
           </div>
         </div>
 
+        <!-- Gráfico Pizza (Chart.js) -->
+        <div class="card chart-card">
+          <h2>Distribuição visual (Pizza)</h2>
+          <div class="chart-pie-container">
+            <canvas id="chartPieDistribution"></canvas>
+          </div>
+        </div>
+
+        <!-- Ranking Municípios -->
+        <div class="card chart-card">
+          <h2>🏆 Top 5 Municípios</h2>
+          <div id="rankingMunicipios">
+            <!-- preenchido via JS -->
+          </div>
+        </div>
+
+        <!-- Comparativo Regional -->
+        <div class="card chart-card" style="grid-column: 1 / -1;">
+          <h2>Comparativo Regional (C1-C4 por Município)</h2>
+          <div id="comparativoRegional">
+            <!-- preenchido via JS -->
+          </div>
+        </div>
+
+        <!-- Comparativo por Critério (existente) -->
         <div class="card chart-card">
           <h2>Comparativo por critério</h2>
           <div class="chart-bars-group" id="chartCriteria">
@@ -283,14 +329,34 @@
           </div>
         </div>
 
+        <!-- Gráfico de Linha (Tendência) -->
         <div class="card chart-card">
-          <h2>Série temporal de visitas</h2>
+          <h2>Série temporal (Tendência)</h2>
+          <div class="chart-trend-container">
+            <canvas id="chartTrendLine"></canvas>
+          </div>
+        </div>
+
+        <!-- Mapa Visual -->
+        <div class="card chart-card" style="grid-column: 1 / -1;">
+          <h2>📍 Mapa de Visitações por Município</h2>
+          <div id="mapaVisual">
+            <!-- preenchido via JS -->
+          </div>
+        </div>
+
+        <!-- Timeline Simples (existente) -->
+        <div class="card chart-card">
+          <h2>Série temporal de visitas (Barras)</h2>
           <div class="chart-timeline" id="chartTimeline">
             <!-- linha simples via JS -->
           </div>
         </div>
       </div>
     </section>
+
+    </main>
+</div>
   </main>
 </div>
 
@@ -321,6 +387,7 @@
 
 <script src="db.js"></script>
 <script src="charts.js"></script>
+<script src="dashboard.js"></script>
 <script src="filters-export.js"></script>
 <script src="ui.js"></script>
 </body>

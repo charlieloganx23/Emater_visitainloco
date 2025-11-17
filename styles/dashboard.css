@@ -165,11 +165,299 @@
   flex: 1;
 }
 
+/* ========================================
+   FILTROS DO DASHBOARD
+   ======================================== */
+
+.dashboard-filters {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  flex-wrap: wrap;
+}
+
+.dashboard-filters select {
+  flex: 1;
+  min-width: 150px;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  background: white;
+  cursor: pointer;
+}
+
+.dashboard-filters select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.dashboard-filters button {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dashboard-filters .btn-apply {
+  background: #2563eb;
+  color: white;
+  font-weight: 500;
+}
+
+.dashboard-filters .btn-apply:hover {
+  background: #1d4ed8;
+}
+
+.dashboard-filters .btn-clear {
+  background: white;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+}
+
+.dashboard-filters .btn-clear:hover {
+  background: #f3f4f6;
+}
+
+/* ========================================
+   GRÁFICO DE PIZZA (CHART.JS)
+   ======================================== */
+
+.chart-pie-container {
+  position: relative;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========================================
+   RANKING DE MUNICÍPIOS
+   ======================================== */
+
+#rankingMunicipios {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.ranking-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #f9fafb;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s;
+}
+
+.ranking-item:hover {
+  background: #f3f4f6;
+  transform: translateX(2px);
+}
+
+.ranking-position {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  border-radius: 50%;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.ranking-municipio {
+  flex: 1;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: #374151;
+}
+
+.ranking-badge {
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  background: #e0e7ff;
+  color: #4338ca;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.ranking-value {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #2563eb;
+  min-width: 50px;
+  text-align: right;
+}
+
+/* ========================================
+   COMPARATIVO REGIONAL
+   ======================================== */
+
+#comparativoRegional {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.regional-item {
+  display: grid;
+  grid-template-columns: 140px 1fr 60px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: #f9fafb;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+}
+
+.regional-municipio {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.regional-bars {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.regional-bar-wrap {
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.regional-bar {
+  height: 100%;
+  transition: width 0.4s ease;
+  border-radius: 999px;
+}
+
+.regional-bar.c1 {
+  background: #22c55e;
+}
+
+.regional-bar.c2 {
+  background: #3b82f6;
+}
+
+.regional-bar.c3 {
+  background: #a855f7;
+}
+
+.regional-bar.c4 {
+  background: #f59e0b;
+}
+
+.regional-avg {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #2563eb;
+  text-align: right;
+}
+
+/* ========================================
+   GRÁFICO DE LINHA (TENDÊNCIA)
+   ======================================== */
+
+.chart-trend-container {
+  position: relative;
+  height: 200px;
+  margin-top: 12px;
+}
+
+/* ========================================
+   MAPA VISUAL DE VISITAÇÕES
+   ======================================== */
+
+#mapaVisual {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.mapa-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s;
+}
+
+.mapa-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.mapa-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  color: white;
+}
+
+.mapa-municipio {
+  flex: 1;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.mapa-count {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
 @media (max-width: 900px) {
   .grid-dashboard {
     grid-template-columns: minmax(0, 1fr);
   }
   .kpi-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .dashboard-filters {
+    flex-direction: column;
+  }
+  .dashboard-filters select {
+    width: 100%;
+  }
+  .chart-bars-group {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  #mapaVisual {
+    grid-template-columns: 1fr;
+  }
+  .regional-item {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .regional-bars {
+    order: 3;
   }
 }
