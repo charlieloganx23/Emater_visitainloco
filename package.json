@@ -1,0 +1,12 @@
+{
+  "name": "observacao-in-loco-ux",
+  "version": "1.0.0",
+  "description": "Sistema de observação in loco com dashboard e espelho de visitas",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
