@@ -96,6 +96,12 @@ async function populateDashboardTecnicos() {
 
 async function applyDashboardFilters() {
   let list = await db_list();
+  
+  // Garantir que list é um array
+  if (!Array.isArray(list)) {
+    console.error('db_list não retornou array:', list);
+    list = [];
+  }
 
   // Filtro de município
   if (dashboardFilters.municipio) {
@@ -168,23 +174,48 @@ async function updateDashboardMetrics() {
   let c1Sim = 0, c1Total = 0;
   let propsComMercado = 0;
 
-  list.forEach(r => {
-    Object.entries(r).forEach(([key, value]) => {
-      if (value === "sim" || value === "nao" || value === "parcial") {
-        if (value === "sim") totalSim++;
-        if (value === "nao") totalNao++;
-        if (value === "parcial") totalParcial++;
+  list.forEach(visita => {
+    // Processar critérios que vêm como arrays
+    ['c1', 'c2', 'c3', 'c4'].forEach(criterio => {
+      if (Array.isArray(visita[criterio])) {
+        visita[criterio].forEach(item => {
+          Object.entries(item).forEach(([key, value]) => {
+            if (value === "sim" || value === "nao" || value === "parcial") {
+              if (value === "sim") totalSim++;
+              if (value === "nao") totalNao++;
+              if (value === "parcial") totalParcial++;
 
-        if (key.startsWith("c1_")) {
-          c1Total++;
-          if (value === "sim") c1Sim++;
+              if (criterio === "c1") {
+                c1Total++;
+                if (value === "sim") c1Sim++;
+              }
+            }
+          });
+        });
+      }
+    });
+
+    // Também processar campos flat (c1_01, c2_01, etc.) para compatibilidade
+    Object.entries(visita).forEach(([key, value]) => {
+      if (value === "sim" || value === "nao" || value === "parcial") {
+        if (!key.includes('id') && !key.includes('visita')) {
+          if (value === "sim") totalSim++;
+          if (value === "nao") totalNao++;
+          if (value === "parcial") totalParcial++;
+
+          if (key.startsWith("c1_")) {
+            c1Total++;
+            if (value === "sim") c1Sim++;
+          }
         }
       }
     });
 
-    const hasMercado = Object.entries(r).some(
-      ([key, value]) => key.startsWith("c4_") && value === "sim"
-    );
+    // Verificar mercados (C4)
+    const hasMercado = Array.isArray(visita.c4) 
+      ? visita.c4.some(item => Object.values(item).some(v => v === "sim"))
+      : Object.entries(visita).some(([key, value]) => key.startsWith("c4_") && value === "sim");
+    
     if (hasMercado) propsComMercado++;
   });
 
@@ -235,11 +266,29 @@ function updatePieChart() {
   const list = filteredVisitas;
   let totalSim = 0, totalNao = 0, totalParcial = 0;
 
-  list.forEach(r => {
-    Object.entries(r).forEach(([key, value]) => {
-      if (value === "sim") totalSim++;
-      if (value === "nao") totalNao++;
-      if (value === "parcial") totalParcial++;
+  list.forEach(visita => {
+    // Processar critérios que vêm como arrays
+    ['c1', 'c2', 'c3', 'c4'].forEach(criterio => {
+      if (Array.isArray(visita[criterio])) {
+        visita[criterio].forEach(item => {
+          Object.values(item).forEach(value => {
+            if (value === "sim") totalSim++;
+            if (value === "nao") totalNao++;
+            if (value === "parcial") totalParcial++;
+          });
+        });
+      }
+    });
+
+    // Também processar campos flat para compatibilidade
+    Object.entries(visita).forEach(([key, value]) => {
+      if (value === "sim" || value === "nao" || value === "parcial") {
+        if (!key.includes('id') && !key.includes('visita')) {
+          if (value === "sim") totalSim++;
+          if (value === "nao") totalNao++;
+          if (value === "parcial") totalParcial++;
+        }
+      }
     });
   });
 
@@ -302,10 +351,27 @@ function updateRankingMunicipios() {
 
     municipioStats[v.municipio].visitas++;
 
+    // Processar arrays de critérios
+    ['c1', 'c2', 'c3', 'c4'].forEach(criterio => {
+      if (Array.isArray(v[criterio])) {
+        v[criterio].forEach(item => {
+          Object.values(item).forEach(value => {
+            if (value === "sim" || value === "nao" || value === "parcial") {
+              municipioStats[v.municipio].total++;
+              if (value === "sim") municipioStats[v.municipio].sim++;
+            }
+          });
+        });
+      }
+    });
+
+    // Processar campos flat para compatibilidade
     Object.entries(v).forEach(([key, value]) => {
       if (value === "sim" || value === "nao" || value === "parcial") {
-        municipioStats[v.municipio].total++;
-        if (value === "sim") municipioStats[v.municipio].sim++;
+        if (!key.includes('id') && !key.includes('visita') && !key.startsWith('c')) {
+          municipioStats[v.municipio].total++;
+          if (value === "sim") municipioStats[v.municipio].sim++;
+        }
       }
     });
   });
@@ -350,10 +416,25 @@ function updateComparativoRegional() {
       };
     }
 
+    // Processar arrays de critérios
+    ['c1', 'c2', 'c3', 'c4'].forEach(criterio => {
+      if (Array.isArray(v[criterio])) {
+        v[criterio].forEach(item => {
+          Object.values(item).forEach(value => {
+            if (value === "sim" || value === "nao" || value === "parcial") {
+              municipioStats[v.municipio][criterio].total++;
+              if (value === "sim") municipioStats[v.municipio][criterio].sim++;
+            }
+          });
+        });
+      }
+    });
+
+    // Processar campos flat para compatibilidade
     Object.entries(v).forEach(([key, value]) => {
       if (value === "sim" || value === "nao" || value === "parcial") {
         const prefix = key.split("_")[0];
-        if (municipioStats[v.municipio][prefix]) {
+        if (municipioStats[v.municipio][prefix] && !key.includes('id')) {
           municipioStats[v.municipio][prefix].total++;
           if (value === "sim") municipioStats[v.municipio][prefix].sim++;
         }
@@ -412,23 +493,42 @@ function updateTrendLineChart() {
   if (!canvas || typeof Chart === 'undefined') return;
 
   const list = filteredVisitas.sort((a, b) => 
-    (a.dataVisita || '').localeCompare(b.dataVisita || '')
+    (a.data_visita || a.dataVisita || '').localeCompare(b.data_visita || b.dataVisita || '')
   );
 
   const trendData = {};
   list.forEach(v => {
-    if (!v.dataVisita) return;
+    const dataVisita = v.data_visita || v.dataVisita;
+    if (!dataVisita) return;
 
     let sim = 0, total = 0;
+    
+    // Processar arrays de critérios
+    ['c1', 'c2', 'c3', 'c4'].forEach(criterio => {
+      if (Array.isArray(v[criterio])) {
+        v[criterio].forEach(item => {
+          Object.values(item).forEach(value => {
+            if (value === "sim" || value === "nao" || value === "parcial") {
+              total++;
+              if (value === "sim") sim++;
+            }
+          });
+        });
+      }
+    });
+
+    // Processar campos flat para compatibilidade
     Object.entries(v).forEach(([key, value]) => {
       if (value === "sim" || value === "nao" || value === "parcial") {
-        total++;
-        if (value === "sim") sim++;
+        if (!key.includes('id') && !key.includes('visita')) {
+          total++;
+          if (value === "sim") sim++;
+        }
       }
     });
 
     const pct = total ? (sim / total) * 100 : 0;
-    const monthKey = v.dataVisita.slice(0, 7); // YYYY-MM
+    const monthKey = dataVisita.slice(0, 7); // YYYY-MM
 
     if (!trendData[monthKey]) {
       trendData[monthKey] = { sum: 0, count: 0 };
